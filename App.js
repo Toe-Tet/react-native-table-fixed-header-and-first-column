@@ -1,22 +1,15 @@
-import { StatusBar } from "expo-status-bar";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
 	StyleSheet,
-	Text,
 	View,
 	ScrollView,
 	Animated as Animate,
 } from "react-native";
 import Animated, {
-	runOnJS,
 	scrollTo,
-	useAnimatedGestureHandler,
 	useAnimatedRef,
 	useAnimatedScrollHandler,
-	useAnimatedStyle,
-	useDerivedValue,
 	useSharedValue,
-	withDecay,
 } from "react-native-reanimated";
 
 export default function App() {
@@ -143,16 +136,10 @@ const styles = StyleSheet.create({
 	},
 	leftColumn: {
 		backgroundColor: "red",
-		// flex: 1,
-		// width: 150,
-		// height: "100%",r
 	},
 	rightColumn: {
-		// flex: 1,
-		// width: "100%",
 		backgroundColor: "green",
 		height: "100%",
-		// width: 150,
 	},
 	leftColumnHeader: {
 		backgroundColor: "pink",
