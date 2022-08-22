@@ -20,60 +20,11 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function App() {
-	const [items, setItems] = useState([
-		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-	]);
-	// let leftColumnScrollPosition = useRef(new Animated.Value(0)).current;
-	// const leftColumnScrollTranslation = leftColumnScrollPosition.interpolate({
-	// 	inputRange: [0, 100],
-	// 	outputRange: [0, -100],
-	// 	// extrapolate: "clamp",
-	// });
-	// const leftColumnScrollEvent = Animated.event(
-	// 	[
-	// 		{
-	// 			nativeEvent: {
-	// 				contentOffset: {
-	// 					y: leftColumnScrollPosition,
-	// 				},
-	// 			},
-	// 		},
-	// 	],
-	// 	{
-	// 		useNativeDriver: true,
-	// 		// listener: (event) => {
-	// 		// 	console.log(leftColumnScrollTranslation, "event");
-	// 		// 	// if (isCloseToBottom(nativeEvent)) {
-	// 		// 	// 	irf (nativeEvent.contentOffset.y >= 238) {
-	// 		// 	// 		// setLeftColumnScrollEnable(false);
-	// 		// 	// 		console.log(
-	// 		// 	// 			nativeEvent.contentOffset.y,
-	// 		// 	// 			"isCloseToBottom"
-	// 		// 	// 		);
-	// 		// 	// 	}
-	// 		// 	// }
-	// 		// 	// rightColumnScrollPosition = leftColumnScrollPosition;
-	// 		// },
-	// 	}
-	// );
-	// let rightColumnScrollPosition = useRef(new Animated.Value(0)).current;
-	// const rightColumnScrollTranslation = rightColumnScrollPosition.interpolate({
-	// 	inputRange: [0, 100],
-	// 	outputRange: [0, -100],
-	// 	// extrapolate: "clamp",
-	// });
-	// const rightColumnScrollEvent = Animated.event(
-	// 	[
-	// 		{
-	// 			nativeEvent: {
-	// 				contentOffset: {
-	// 					y: rightColumnScrollPosition,
-	// 				},
-	// 			},
-	// 		},
-	// 	],
-	// 	{ useNativeDriver: true }
-	// );
+	const [items, setItems] = useState([1, 2, 3, 4, 5, 6]);
+
+	const leftRef = useAnimatedRef();
+	const rightRef = useAnimatedRef();
+	let isScrollInLeft = useSharedValue(0);
 
 	const isCloseToBottom = ({
 		layoutMeasurement,
@@ -87,72 +38,17 @@ export default function App() {
 		);
 	};
 
-	const isCloseToTop = ({ layoutMeasurement, contentOffset, contentSize }) =>
-		contentOffset.y == 0;
-	const leftRef = useAnimatedRef();
-	const rightRef = useAnimatedRef();
-	// const [rightStyle, setRightStyle] = useState(styles.rightColumnRows);
-	let scrollOffsetLeft = useSharedValue(0);
-	let scrollOffsetRight = useSharedValue(0);
-	let isScrollInLeft = useSharedValue(0);
-
-	// let scroll = useSharedValue(0);
-	// let isScrollEndReach = useSharedValue(0);
-	let [isScrollEndReach, setIsScrollEndReach] = useState(false);
-	// const [currentScroll, setCurrentScroll] = useState("");
-
-	let leftTransformStyle = useAnimatedStyle(() => {
-		return {
-			// top: scrollOffsetLeft.value,
-			transform: [
-				{
-					translateY: scrollOffsetLeft.value,
-				},
-			],
-		};
-	});
-	let rightTransformStyle = useAnimatedStyle(() => {
-		return {
-			// top: scrollOffsetRight.value,
-
-			transform: [
-				{
-					translateY: scrollOffsetRight.value,
-				},
-			],
-		};
-	});
-	// useDerivedValue(() => {
-	// 	console.log("derived", scrollOffsetRight.value);
-	// 	scrollTo(rightRef, 0, scrollOffsetRight.value, false);
-	// });
 	const leftScrollHandler = useAnimatedScrollHandler({
 		onBeginDrag: (event) => {
 			isScrollInLeft.value = 1;
 		},
 		onScroll: (event) => {
-			// if (
-			// 	!isScrollEnd(event) ||
-			// 	scrollOffsetRight.value <= -event.contentOffset.y
-			// ) {
-			// 	if (isScrollEndReach.value == 0)
-			// 		scrollOffsetRight.value = -event.contentOffset.y;
-			// } else {
-			// 	isScrollEndReach.value = 1;
-			// }
-			// if (isCloseToBottom(event)) {
-			// 	// runOnJS(setIsScrollEndReach)(true);
-
-			// 	// isScrollEndReach.value = 1;
-			// 	console.log(isScrollEndReach, "end");
-			// } else {
-			// if (!isScrollEndReach)
-			// scrollOffsetRight.value = event.contentOffset.y;
-			// }
-			if (isScrollInLeft.value == 1)
+			if (isScrollInLeft.value == 1) {
 				scrollTo(rightRef, 0, event.contentOffset.y, false);
-			// console.log(event);
-			console.log(event.contentOffset.y, "left");
+				if (isCloseToBottom(event)) {
+					// runOnJS(setItems)([...items, setItems]);
+				}
+			}
 		},
 	});
 
@@ -161,45 +57,14 @@ export default function App() {
 			isScrollInLeft.value = 0;
 		},
 		onScroll: (event) => {
-			// if (
-			// 	!isScrollEnd(event) ||
-			// 	scrollOffsetRight.value <= -event.contentOffset.y
-			// ) {
-			// 	if (isScrollEndReach.value == 0)
-			// 		scrollOffsetRight.value = -event.contentOffset.y;
-			// } else {
-			// 	isScrollEndReach.value = 1;
-			// }
-			// if (isCloseToBottom(event)) {
-			// 	// runOnJS(setIsScrollEndReach)(true);
-
-			// 	// isScrollEndReach.value = 1;
-			// 	console.log(isScrollEndReach, "end");
-			// } else {
-			// if (!isScrollEndReach)
-			// scrollOffsetRight.value = event.contentOffset.y;
-			// }
-			if (isScrollInLeft.value == 0)
+			if (isScrollInLeft.value == 0) {
 				scrollTo(leftRef, 0, event.contentOffset.y, false);
-			// console.log(event);
-			console.log(event.contentOffset.y, "right");
-		},
-		onEndDrag: (event) => {
-			// scrollTo(leftRef, 0, -event.contentOffset.y + 0.1, false);
+				if (isCloseToBottom(event)) {
+					// runOnJS(setItems)([...items, setItems]);
+				}
+			}
 		},
 	});
-
-	// useEffect(() => {
-	// 	// console.log(rightColumnScrollPosition., "..rightColumnScrollPosition");
-	// 	rightColumnScrollPosition.addListener((position) => {
-	// 		console.log(position.value, "right");
-	// 		// leftColumnScrollPosition = rightColumnScrollPosition;
-	// 	});
-	// 	leftColumnScrollPosition.addListener((position) => {
-	// 		console.log(position.value, "left");
-	// 		// rightColumnScrollPosition = leftColumnScrollPosition;
-	// 	});
-	// });
 
 	return (
 		<View style={styles.container}>
@@ -209,87 +74,10 @@ export default function App() {
 				<Animated.ScrollView
 					onScroll={leftScrollHandler}
 					ref={leftRef}
-					// scrollEnabled={!isScrollEndReach}
-					// onScrollBeginDrag={({ nativeEvent }) => {
-					// 	console.log(-nativeEvent.contentOffset.y, "y");
-					// 	scrollOffsetLeft.value = -nativeEvent.contentOffset.y;
-					// }}
-					// onScroll={Animated.event(
-					// 	[
-					// 		{
-					// 			nativeEvent: {
-					// 				contentOffset: {
-					// 					y: leftColumnScrollPosition,
-					// 				},
-					// 			},
-					// 		},
-					// 	],
-					// 	{
-					// 		useNativeDriver: false,
-					// 		listener: ({ nativeEvent }) => {
-					// 			console.log(
-					// 				nativeEvent.contentOffset.y,
-					// 				"left event"
-					// 			);
-					// 			scrollOffsetRight.value =
-					// 				nativeEvent.contentOffset.y;
-					// 			// rightRef.current.scrollTo({
-					// 			// 	y: nativeEvent.contentOffset.y,
-					// 			// });
-					// 			// setCurrentScroll("left");
-					// 			// rightRef.current.setNativeProps({
-					// 			// 	style: {
-					// 			// 		...styles.rightColumnRows,
-					// 			// 		transform: [
-					// 			// 			{
-					// 			// 				translateY:
-					// 			// 					leftColumnScrollTranslation,
-					// 			// 			},
-					// 			// 		],
-					// 			// 	},
-					// 			// });
-					// 			//  {
-					// 			// 	...styles.rightColumnRows,
-					// 			// 	backgroundColor: "aqua",
-					// 			// 	// transform: [
-					// 			// 	// 	{
-					// 			// 	// 		contentOffset:
-					// 			// 	// 			nativeEvent.contentOffset.y,
-					// 			// 	// 	},
-					// 			// 	// ],
-					// 			// }
-					// 		},
-					// 	}
-					// )}
-					// onScroll={({
-					// 	nativeEvent: {
-					// 		contentOffset: { y },
-					// 	},
-					// }) => {
-					// 	leftColumnScrollPosition.setValue(y);
-					// }}
 					scrollEventThrottle={1}
 					bounces={false}
 					showsVerticalScrollIndicator={false}
-					// style={{ paddingBottom: 160 }}
 				>
-					{/* <Animated.View
-						ref={leftRef}
-						style={[
-							styles.leftColumnRows,
-							// { paddingBottom: 160 },
-
-							// {
-							// 	transform: [
-							// 		{
-							// 			translateY:
-							// 				rightColumnScrollTranslation,
-							// 		},
-							// 	],
-							// },
-							leftTransformStyle,
-						]}
-					> */}
 					{items.map((item) => {
 						return (
 							<View
@@ -298,7 +86,6 @@ export default function App() {
 							></View>
 						);
 					})}
-					{/* </Animated.View> */}
 				</Animated.ScrollView>
 			</View>
 			{/* Right Column */}
@@ -317,62 +104,10 @@ export default function App() {
 					<Animated.ScrollView
 						ref={rightRef}
 						onScroll={rightScrollHandler}
-						// onScrollBeginDrag={({ nativeEvent }) => {
-						// 	console.log(-nativeEvent.contentOffset.y, "y");
-						// 	scrollOffsetRight.value =
-						// 		-nativeEvent.contentOffset.y;
-						// }}
-						// onScroll={Animated.event(
-						// 	[
-						// 		{
-						// 			nativeEvent: {
-						// 				contentOffset: {
-						// 					y: leftColumnScrollPosition,
-						// 				},
-						// 			},
-						// 		},
-						// 	],
-						// 	{
-						// 		useNativeDriver: true,
-						// 		listener: ({ nativeEvent }) => {
-						// 			console.log(
-						// 				nativeEvent.contentOffset.y,
-						// 				"right event"
-						// 			);
-						// 			// rightRef.current.setNativeProps({
-						// 			// 	style: {
-						// 			// 		...styles.rightColumnRows,
-						// 			// 		transform: [
-						// 			// 			{
-						// 			// 				translateY: 0,
-						// 			// 			},
-						// 			// 		],
-						// 			// 	},
-						// 			// });
-						// 		},
-						// 	}
-						// )}
-						// style={{ flex: 1 }}
 						scrollEventThrottle={1}
 						bounces={false}
 						showsVerticalScrollIndicator={false}
 					>
-						{/* <Animated.View
-							// ref={rightRef}
-							style={[
-								styles.rightColumnRows,
-								{ paddingBottom: 160 },
-								// {
-								// 	transform: [
-								// 		{
-								// 			translateY:
-								// 				leftColumnScrollTranslation,
-								// 		},
-								// 	],
-								// },
-								// rightTransformStyle,
-							]}
-						> */}
 						{items.map((item) => {
 							return (
 								<View
@@ -392,7 +127,6 @@ export default function App() {
 								</View>
 							);
 						})}
-						{/* </Animated.View> */}
 					</Animated.ScrollView>
 				</View>
 			</ScrollView>
